@@ -52,3 +52,9 @@ msgstr ""
 
 msgid "Explain: Sync with \"posts\" tag notes"
 msgstr ""
+
+msgid "Sync Tag"
+msgstr ""
+
+msgid "Connect the Evernote"
+msgstr ""

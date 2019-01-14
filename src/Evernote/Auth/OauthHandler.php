@@ -8,6 +8,8 @@ class OauthHandler
 {
     protected $sandbox;
 
+    protected $china;
+
     protected $consumer_secret;
 
     protected $token_secret;
@@ -16,10 +18,11 @@ class OauthHandler
 
     protected $params = array();
 
-    public function __construct($sandbox = true, $supportLinkedSandbox = false)
+    public function __construct($sandbox = true, $supportLinkedSandbox = false, $china = false)
     {
         $this->sandbox              = $sandbox;
         $this->supportLinkedSandbox = $supportLinkedSandbox;
+        $this->china                = $china;
 
         $this->params['oauth_callback']         = null;
         $this->params['oauth_consumer_key']     = null;
@@ -41,9 +44,12 @@ class OauthHandler
 
         $this->consumer_secret = $consumer_secret;
 
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
         // first call
         if (!array_key_exists('oauth_verifier', $_GET) && !array_key_exists('oauth_token', $_GET)) {
-            session_start();
             unset($this->params['oauth_token']);
             unset($this->params['oauth_verifier']);
 
@@ -66,7 +72,6 @@ class OauthHandler
             throw new AuthorizationDeniedException('Authorization declined.');
         //the user authorized the app
         } else {
-            session_start();
             $this->token_secret = $_SESSION['oauth_token_secret'];
 
             $this->params['oauth_token']    = $_GET['oauth_token'];
@@ -80,12 +85,17 @@ class OauthHandler
 
     protected function getBaseUrl($prefix = '')
     {
-        $subdomain = (true === $this->sandbox) ? 'sandbox':'www';
+        $baseUrl = '';
+        if (true === $this->sandbox) {
+            $baseUrl = "https://sandbox.evernote.com";
+        } elseif (true === $this->china) {
+            $baseUrl = "https://app.yinxiang.com";
+        } else {
+            $baseUrl = "https://www.evernote.com";     
+        }
+        $baseUrl .= $prefix == '' ? '' : '/' . $prefix;   
 
-        $baseUrl  = "https://$subdomain.evernote.com";
-        $baseUrl .= $prefix == '' ? '' : '/' . $prefix;
-
-        return $baseUrl;
+        return $baseUrl;     
     }
 
     protected function getTemporaryCredentials()
@@ -96,37 +106,30 @@ class OauthHandler
 
         $arguments = array();
 
-        $handle  = curl_init();
+        $handle  = curl_init();     
 
         curl_setopt_array($handle, array(
             CURLOPT_POST           => true,
             CURLOPT_URL            => $this->getBaseUrl('oauth'),
             CURLOPT_HTTPHEADER     => $this->formatHeaders($headers),
             CURLOPT_POSTFIELDS     => http_build_query($arguments, '', '&'),
-            CURLOPT_HEADER         => true,
-            CURLOPT_RETURNTRANSFER => true
+            CURLOPT_HEADER         => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => 0 // 支持 SSH
         ));
 
         $raw = curl_exec($handle);
 
+        if ($raw === FALSE) {
+          echo "cURL Error: " . curl_error($ch);
+        }
+
         # close curl handle
         curl_close($handle);
 
-        $responseBody = $this->getResponseBody($raw);
-
-        parse_str($responseBody, $parts);
+        parse_str($raw, $parts);
 
         return $parts;
-    }
-
-    protected function getResponseBody($raw)
-    {
-        list($headers, $text) = explode("\r\n\r\n", $raw, 2);
-        if (strpos($headers, ' 100 Continue') !== false) {
-            list(, $text) = explode("\r\n\r\n", $text, 2);
-        }
-
-        return $text;
     }
 
     protected function getOauthNonce()
@@ -181,9 +184,10 @@ class OauthHandler
     protected function getAuthorizationHeaderString()
     {
         $params = $this->params;
+        if(isset($this->params['oauth_callback'])) $params['oauth_callback'] = rawurlencode($this->params['oauth_callback']);
         $params['oauth_signature'] = $this->getOauthSignature();
 
-        return 'OAuth ' . $this->formatParametersString($params, ', ', '"');
+        return 'OAuth ' . $this->formatParametersString($params, ',', '"');
     }
 
     protected function getSignatureKey()
