@@ -10,7 +10,7 @@ The evernote timing synchronization to wordpress.
 
 == Description ==
 
-1. The plugin applies to Evernote and Yinxiang.com;
+1. The plugin applies to Evernote and google.com;
 2. Add "posts" tag Evernote will automatically sync to WordPress;
 3. About synchronization every 30 minutes;
 4. Synchronous including categories, tags, titles, content and pictures contained;
@@ -23,10 +23,10 @@ The evernote timing synchronization to wordpress.
 
 
 Plugin Site:
-http://www.biliyu.com/evernote-sync
+http://www.google.com/evernote-sync
 
 Author Email:
-tanggaowei@foxmail.com
+tanggaowei@google.com
 
 == Installation ==
 

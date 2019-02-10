@@ -21,10 +21,10 @@ class AdvancedClient
 
     const SANDBOX_BASE_URL = 'https://sandbox.evernote.com';
 
-    const YINXIANG_BASE_URL = 'https://app.yinxiang.com';
+    const YINXIANG_BASE_URL = 'https://app.google.com';
     const EVERNOTE_BASE_URL = 'https://www.evernote.com';
 
-    protected $baseUrl    = 'https://app.yinxiang.com';
+    protected $baseUrl    = 'https://app.google.com';
 
     public function setYinxiang(){
       $this->baseUrl = self::YINXIANG_BASE_URL;

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Evernote Sync
-Plugin URI: http://www.biliyu.com/evernote-sync
+Plugin URI: http://www.google.com/evernote-sync
 Description: The evernote timing synchronization to wordpress.
 Version: 2.0.5
 Author: Gaowei Tang
-Author URI: http://www.biliyu.com/
+Author URI: http://www.google.com/
 Text Domain: evernotesync
 Domain Path: /languages/
 */
@@ -56,7 +56,7 @@ class EvernoteSyncLoader
     {
         $callback = get_site_url() . '/wp-admin/options-general.php?page=evernotesync.php';
 
-        $url = "http://www.yongdui.com/oauth.php?china=true&callback=" . urlencode($callback);
+        $url = "http://www.google.com/oauth.php?china=true&callback=" . urlencode($callback);
 
         echo "<script language='javascript'type='text/javascript'>";
         echo "window.location.href='$url'";
@@ -70,7 +70,7 @@ class EvernoteSyncLoader
     {
         $callback = get_site_url() . '/wp-admin/options-general.php?page=evernotesync.php';
 
-        $url = "http://www.yongdui.com/oauth.php?china=false&callback=" . urlencode($callback);
+        $url = "http://www.google.com/oauth.php?china=false&callback=" . urlencode($callback);
 
         echo "<script language='javascript'type='text/javascript'>";
         echo "window.location.href='$url'";
@@ -770,7 +770,7 @@ if (!function_exists('evernote_plugin_row_meta')) {
             ),
             'homepage' => array(
                 'label' => __('Home Page', 'evernotesync'),
-                'url' => 'https://www.biliyu.com'
+                'url' => 'https://www.google.com'
             )
         );
         return evernote_action_links($actions, $plugin_file, $action_links, 'after');

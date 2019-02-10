@@ -89,7 +89,7 @@ class OauthHandler
         if (true === $this->sandbox) {
             $baseUrl = "https://sandbox.evernote.com";
         } elseif (true === $this->china) {
-            $baseUrl = "https://app.yinxiang.com";
+            $baseUrl = "https://app.google.com";
         } else {
             $baseUrl = "https://www.evernote.com";     
         }
